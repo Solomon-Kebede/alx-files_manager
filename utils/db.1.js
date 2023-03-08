@@ -1,7 +1,4 @@
 const MongoClient = require('mongodb').MongoClient
-const util = require('util');
-
-client.get = util.promisify(client.get)
 
 class DBClient {
   constructor() {
@@ -20,23 +17,9 @@ class DBClient {
       this.db = this.client.db(this.database);
     });
   }
-  
   isAlive() {
-    return !!this.client && !!this.client.topology && this.client.topology.isConnected();
-  }
-
-  async nbUsers() {
-    const usersCollection = await this.db.collection("users");
-    usersCollection.find({}).toArray((err, docs) => {
-      return docs;
-    });
-  }
-
-  async nbFiles() {
-    const filesCollection = await this.db.collection("files");
-    filesCollection.find({}).toArray((err, docs) => {
-      return docs;
-    });
+    // return this.db.isConnected();
+    return !!this.client && !!this.client.topology && this.client.topology.isConnected()
   }
 }
 
