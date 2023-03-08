@@ -12,6 +12,7 @@ class RedisClient {
     });
     this.client.get = util.promisify(this.client.get);
     this.client.set = util.promisify(this.client.set);
+    this.client.del = util.promisify(this.client.del);
   }
 
   isAlive() {
@@ -25,6 +26,10 @@ class RedisClient {
 
   async set(key, value, timeToExpiry) {
     await this.client.set(key, value, 'EX', timeToExpiry);
+  }
+
+  async del(key) {
+    await this.client.del(key);
   }
 }
 
