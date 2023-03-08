@@ -12,9 +12,13 @@ class DBClient {
       if (err) {
         console.log(err);
       }
+      this.client = client;
       console.log("Connected successfully to server");
-      this.db = client.db(this.database);
+      this.db = this.client.db(this.database);
     });
+  }
+  isAlive() {
+    return !!this.client && !!this.client.topology && this.client.topology.isConnected()
   }
 }
 
