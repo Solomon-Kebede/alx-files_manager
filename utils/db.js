@@ -7,13 +7,14 @@ class DBClient {
     this.port = process.env.DB_PORT || 27017;
     this.database = process.env.DB_DATABASE || 'files_manager';
     this.url = `mongodb://${this.host}:${this.port}`;
+    // this.url = `mongodb://${this.host}:${this.port}/${this.database}`;
     // connect to server
-    MongoClient.connect(this.url, (err, client) => {
+    MongoClient.connect(this.url, {useUnifiedTopology: true},  (err, client) => {
       if (err) {
         console.log(err);
       }
       this.client = client;
-      console.log('Connected successfully to server');
+      // console.log('Connected successfully to server');
       this.db = this.client.db(this.database);
     });
   }
@@ -24,12 +25,36 @@ class DBClient {
 
   async nbUsers() {
     const usersCollection = await this.db.collection('users');
-    usersCollection.find({}).toArray((err, docs) => docs.length);
+    //const usersCollection = await this.client.collection('users');
+    /*
+    usersCollection.find({}).toArray((err, docs) => {
+      if (!err) {
+        // console.log(docs);
+	console.log(docs.length);
+        return (docs.length)
+      }
+    });*/
+    //return usersCollection.find({}).toArray().length;
+    return usersCollection.estimatedDocumentCount();
   }
 
   async nbFiles() {
+    let return_value = 0;
     const filesCollection = await this.db.collection('files');
-    filesCollection.find({}).toArray((err, docs) => docs.length);
+    //const filesCollection = await this.client.collection('files');
+    /*filesCollection.find({}).toArray((err, docs) => {
+      if (!err) {
+        console.log(docs.length);
+        return_value = docs.length;
+      }
+    });
+    return return_value;*/
+    /*filesCollection.find({}).toArray((err, docs) => {
+      return_value = return_value + Object.keys(docs).length;
+      return return_value;
+    });*/
+    //return return_value;
+    return filesCollection.estimatedDocumentCount();
   }
 }
 
